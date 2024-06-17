@@ -303,6 +303,7 @@ require('lazy').setup({
         --   },
         -- },
         -- pickers = {}
+        style = "bordered" ,
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -510,18 +511,18 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        gopls = {
-          settings = {
-            gopls = {
-              completeUnimported = true,
-              usePlaceholders = true,
-              analyses = {
-                unusedparams = true,
-              },
-              staticcheck = true,
-            },
-          },
-        },
+        -- gopls = {
+        --   settings = {
+        --     gopls = {
+        --       completeUnimported = true,
+        --       usePlaceholders = true,
+        --       analyses = {
+        --         unusedparams = true,
+        --       },
+        --       staticcheck = true,
+        --     },
+        --   },
+        -- },
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -652,11 +653,17 @@ require('lazy').setup({
       --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
+      'onsails/lspkind.nvim',
     },
     config = function()
       -- See `:help cmp`
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
+      local lspkind = require('lspkind')
+      local border_opts = {
+        border = 'rounded',
+        winhighlight = 'FloatBorder:CmpBorder',
+      }
       luasnip.config.setup {}
 
       cmp.setup {
@@ -666,6 +673,10 @@ require('lazy').setup({
           end,
         },
         completion = { completeopt = 'menu,menuone,noinsert' },
+        window = {
+          completion = cmp.config.window.bordered(border_opts),
+          documentation = cmp.config.window.bordered(border_opts),
+        },
 
         -- For an understanding of why these mappings were
         -- chosen, you will need to read `:help ins-completion`
@@ -725,6 +736,14 @@ require('lazy').setup({
           { name = 'nvim_lsp' },
           { name = 'luasnip' },
           { name = 'path' },
+        },
+        formatting = {
+          format = lspkind.cmp_format({
+            mode = 'symbol_text', -- 显示图标和文本
+            maxwidth = 50, -- 最大宽度
+            ellipsis_char = '...', -- 超出部分显示省略号
+            show_labelDetails = true, -- show labelDetails in menu. Disabled by default
+          })
         },
       }
     end,
@@ -855,6 +874,7 @@ require('lazy').setup({
   -- custom plugins
   require 'custom.plugins.monokai',
   require 'custom.plugins.eazymotion',
+  require 'custom.plugins.go',
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
