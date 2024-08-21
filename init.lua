@@ -1,3 +1,5 @@
+-- NOTE: ------------I think this is import for me now-------------------------
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -29,15 +31,35 @@ vim.opt.showmode = false
 --  See `:help 'clipboard'`
 vim.opt.clipboard = 'unnamedplus'
 
+-- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
+
+-- Sets how neovim will display certain whitespace characters in the editor.
+--  See `:help 'list'`
+--  and `:help 'listchars'`
+vim.opt.list = true
+vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
+
+-- Show which line your cursor is on
+vim.opt.cursorline = true
+
+-- Minimal number of screen lines to keep above and below the cursor.
+vim.opt.scrolloff = 10
+
+-- 设置80行和120行的辅助线
+vim.opt.colorcolumn = '80,120'
+
+-- 設定縮進
+vim.opt.tabstop = 4
+
+-- NOTE: --------------I don't know what it can do but kept-------------------
+
 -- Enable break indent
 vim.opt.breakindent = true
 
 -- Save undo history
 vim.opt.undofile = true
-
--- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
 
 -- Keep signcolumn on by default
 vim.opt.signcolumn = 'yes'
@@ -53,33 +75,20 @@ vim.opt.timeoutlen = 300
 vim.opt.splitright = true
 vim.opt.splitbelow = true
 
--- Sets how neovim will display certain whitespace characters in the editor.
---  See `:help 'list'`
---  and `:help 'listchars'`
-vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
-
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
 
--- Show which line your cursor is on
-vim.opt.cursorline = true
+-- NOTE: -------------- Basic Keymaps -----------------------------------------
+-- NOTE: I will remark first then open what I need
 
--- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 10
-
--- 设置80行和120行的辅助线
-vim.opt.colorcolumn = "80,120"
-
--- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
-vim.keymap.set("i", "jj", "<Esc>")
+vim.keymap.set('i', 'jj', '<Esc>')
 
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
-vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+-- vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
--- Diagnostic keymaps
+-- Diagnostic keymaps -- NOTE:Learning
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Show diagnostic [E]rror messages' })
@@ -91,7 +100,7 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+-- vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -103,12 +112,14 @@ vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' }
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+-- vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+-- vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+-- vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
+-- vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- [[ Basic Autocommands ]]
+-- NOTE: -------------- Basic Autocommands -------------------------------------
+-- NOTE: I will remark first then open what I need
+--
 --  See `:help lua-guide-autocommands`
 
 -- Highlight when yanking (copying) text
@@ -121,31 +132,33 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
--- copy 相對路徑 的方法
-vim.api.nvim_create_user_command("CopyFileRelativePath", function()
-    -- 获取当前文件的绝对路径
-    local absolute_path = vim.fn.expand("%:p")
-    -- 获取当前工作目录
-    local cwd = vim.fn.getcwd()
-    -- 获取当前行号
-    local line_number = vim.fn.line('.')
-    -- 去掉工作目录部分，获取相对路径
-    local relative_path = absolute_path:sub(#cwd + 2)
 
-    vim.fn.setreg("+", relative_path .. ":" .. line_number)
-    vim.notify('Copied "' .. relative_path .. ":" .. line_number .. '" to the clipboard!')
+-- copy 相對路徑 的方法
+vim.api.nvim_create_user_command('CopyFileRelativePath', function()
+  -- 获取当前文件的绝对路径
+  local absolute_path = vim.fn.expand '%:p'
+  -- 获取当前工作目录
+  local cwd = vim.fn.getcwd()
+  -- 获取当前行号
+  local line_number = vim.fn.line '.'
+  -- 去掉工作目录部分，获取相对路径
+  local relative_path = absolute_path:sub(#cwd + 2)
+
+  vim.fn.setreg('+', relative_path .. ':' .. line_number)
+  vim.notify('Copied "' .. relative_path .. ':' .. line_number .. '" to the clipboard!')
 end, {})
-vim.keymap.set("n", "<leader>cp", ":CopyFileRelativePath<CR>")
+vim.keymap.set('n', '<leader>cpr', ':CopyFileRelativePath<CR>')
 
 -- copy 絕對路徑 的方法
-vim.api.nvim_create_user_command("CopyFileAbolutePath", function()
-    -- 获取当前文件的绝对路径
-    local absolute_path = vim.fn.expand("%:p")
-    local line_number = vim.fn.line('.')
+vim.api.nvim_create_user_command('CopyAbolutePath', function()
+  -- 获取当前文件的绝对路径
+  local absolute_path = vim.fn.expand '%:p'
+  local line_number = vim.fn.line '.'
 
-    vim.fn.setreg("+", absolute_path .. ":" .. line_number)
-    vim.notify('Copied "' .. absolute_path .. ":" .. line_number .. '" to the clipboard!')
+  vim.fn.setreg('+', absolute_path .. ':' .. line_number)
+  vim.notify('Copied "' .. absolute_path .. ':' .. line_number .. '" to the clipboard!')
 end, {})
+vim.keymap.set('n', '<leader>cpar', ':CopyAbolutePath<CR>')
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -156,6 +169,21 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
+-- bufferline
+vim.api.nvim_set_keymap('n', '<Tab>', ':BufferLineCycleNext<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<S-Tab>', ':BufferLineCyclePrev<CR>', { noremap = true, silent = true })
+vim.api.nvim_create_user_command('DeleteBufferAndSwitch', function()
+  local current_buf = vim.api.nvim_get_current_buf()
+  vim.cmd 'bnext' -- Switch to the next buffer
+  if current_buf == vim.api.nvim_get_current_buf() then
+    vim.cmd 'bprev' -- If still in the same buffer, try the previous one
+  end
+  vim.cmd('bd ' .. current_buf) -- Finally, delete the original buffer
+end, {})
+vim.api.nvim_set_keymap('n', '<Leader>x', ':DeleteBufferAndSwitch<CR>', { noremap = true, silent = true })
+
+-- NOTE: -------------- Configure and install plugins --------------------------
+--
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -303,7 +331,7 @@ require('lazy').setup({
         --   },
         -- },
         -- pickers = {}
-        style = "bordered" ,
+        style = 'bordered',
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -315,18 +343,19 @@ require('lazy').setup({
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
 
+      -- NOTE:Learning
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
-      vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-      vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp 找Help文件' })
+      vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps 找快捷鍵' })
+      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles 開啟檔案' })
+      vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope 查TS的內建功能' })
+      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord 查目前鼠標指的word' })
+      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep 查文件內容' })
+      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics 查報錯' })
+      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume 恢復查詢' })
+      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat) 打開最近開過的檔案' })
+      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers 跳到目前有開的buf' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>/', function()
@@ -335,21 +364,21 @@ require('lazy').setup({
           winblend = 10,
           previewer = false,
         })
-      end, { desc = '[/] Fuzzily search in current buffer' })
+      end, { desc = '[/] Fuzzily search in current buffer 進階版的/' })
 
-      -- It's also possible to pass additional configuration options.
-      --  See `:help telescope.builtin.live_grep()` for information about particular keys
-      vim.keymap.set('n', '<leader>s/', function()
-        builtin.live_grep {
-          grep_open_files = true,
-          prompt_title = 'Live Grep in Open Files',
-        }
-      end, { desc = '[S]earch [/] in Open Files' })
+      -- -- It's also possible to pass additional configuration options.
+      -- --  See `:help telescope.builtin.live_grep()` for information about particular keys
+      -- vim.keymap.set('n', '<leader>s/', function()
+      --   builtin.live_grep {
+      --     grep_open_files = true,
+      --     prompt_title = 'Live Grep in Open Files',
+      --   }
+      -- end, { desc = '[S]earch [/] in Open Files' })
 
-      -- Shortcut for searching your Neovim configuration files
-      vim.keymap.set('n', '<leader>sn', function()
-        builtin.find_files { cwd = vim.fn.stdpath 'config' }
-      end, { desc = '[S]earch [N]eovim files' })
+      -- -- Shortcut for searching your Neovim configuration files
+      -- vim.keymap.set('n', '<leader>sn', function()
+      --   builtin.find_files { cwd = vim.fn.stdpath 'config' }
+      -- end, { desc = '[S]earch [N]eovim files' })
     end,
   },
 
@@ -421,20 +450,20 @@ require('lazy').setup({
 
           -- Jump to the implementation of the word under your cursor.
           --  Useful when your language has ways of declaring types without an actual implementation.
-          map('gI', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+          map('gi', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
 
           -- Jump to the type of the word under your cursor.
           --  Useful when you're not sure what type a variable is and you want to see
           --  the definition of its *type*, not where it was *defined*.
-          map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
+          -- map('<leader>D', require('telescope.builtin').lsp_type_definitions, 'Type [D]efinition')
 
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+          -- map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+          -- map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
@@ -442,11 +471,12 @@ require('lazy').setup({
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
-          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
+          -- map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction')
 
           -- Opens a popup that displays documentation about the word under your cursor
           --  See `:help K` for why this keymap.
-          map('K', vim.lsp.buf.hover, 'Hover Documentation')
+          -- map('K', vim.lsp.buf.hover, 'Hover Documentation')
+          map('gh', vim.lsp.buf.hover, 'Hover Documentation')
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
@@ -481,17 +511,19 @@ require('lazy').setup({
             })
           end
 
-          -- The following autocommand is used to enable inlay hints in your
-          -- code, if the language server you are using supports them
-          --
-          -- This may be unwanted, since they displace some of your code
-          if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
-            map('<leader>th', function()
-              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-            end, '[T]oggle Inlay [H]ints')
-          end
+          -- -- The following autocommand is used to enable inlay hints in your
+          -- -- code, if the language server you are using supports them
+          -- --
+          -- -- This may be unwanted, since they displace some of your code
+          -- if client and client.server_capabilities.inlayHintProvider and vim.lsp.inlay_hint then
+          --   map('<leader>th', function()
+          --     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+          --   end, '[T]oggle Inlay [H]ints')
+          -- end
         end,
       })
+
+      -- WARN: I ONLY READ HERE -----------------------------------------------------
 
       -- LSP servers and clients are able to communicate to each other what features they support.
       --  By default, Neovim doesn't support everything that is in the LSP specification.
@@ -659,7 +691,7 @@ require('lazy').setup({
       -- See `:help cmp`
       local cmp = require 'cmp'
       local luasnip = require 'luasnip'
-      local lspkind = require('lspkind')
+      local lspkind = require 'lspkind'
       local border_opts = {
         border = 'rounded',
         winhighlight = 'FloatBorder:CmpBorder',
@@ -738,12 +770,12 @@ require('lazy').setup({
           { name = 'path' },
         },
         formatting = {
-          format = lspkind.cmp_format({
+          format = lspkind.cmp_format {
             mode = 'symbol_text', -- 显示图标和文本
             maxwidth = 50, -- 最大宽度
             ellipsis_char = '...', -- 超出部分显示省略号
             show_labelDetails = true, -- show labelDetails in menu. Disabled by default
-          })
+          },
         },
       }
     end,
@@ -812,36 +844,36 @@ require('lazy').setup({
     build = ':TSUpdate',
     opts = {
       ensure_installed = {
-          -- defaults
-          "diff",
-          "c",
-          "vim",
-          "vimdoc",
-          "lua",
-          "luadoc",
-          "bash",
-          "comment",
-          "markdown",
-          "yaml",
-          "regex",
+        -- defaults
+        'diff',
+        'c',
+        'vim',
+        'vimdoc',
+        'lua',
+        'luadoc',
+        'bash',
+        'comment',
+        'markdown',
+        'yaml',
+        'regex',
 
-          -- web
-          "javascript",
-          "jsdoc",
-          "jsonc",
+        -- web
+        'javascript',
+        'jsdoc',
+        'jsonc',
 
-          -- go
-          "go",
-          "gomod",
-          "gosum",
-          "gowork",
-          "gotmpl",
+        -- go
+        'go',
+        'gomod',
+        'gosum',
+        'gowork',
+        'gotmpl',
 
-          -- git
-          "git_config",
-          "git_rebase",
-          "gitattributes",
-          "gitignore",
+        -- git
+        'git_config',
+        'git_rebase',
+        'gitattributes',
+        'gitignore',
       },
 
       -- Autoinstall languages that are not installed
