@@ -519,19 +519,17 @@ require('lazy').setup({
             })
           end
 
-         -- -- The following code creates a keymap to toggle inlay hints in your
-         -- -- code, if the language server you are using supports them
-         -- --
-         -- -- This may be unwanted, since they displace some of your code
-         -- if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
-         --   map('<leader>th', function()
-         --     vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
-         --   end, '[T]oggle Inlay [H]ints')
-         -- end
+          -- The following code creates a keymap to toggle inlay hints in your
+          -- code, if the language server you are using supports them
+          --
+          -- This may be unwanted, since they displace some of your code
+          if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
+            map('<leader>th', function()
+              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+            end, '[T]oggle Inlay [H]ints')
+          end
         end,
       })
-
-      -- WARN: I ONLY READ HERE -----------------------------------------------------
 
       -- LSP servers and clients are able to communicate to each other what features they support.
       --  By default, Neovim doesn't support everything that is in the LSP specification.
@@ -551,18 +549,19 @@ require('lazy').setup({
       --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
       local servers = {
         -- clangd = {},
-        -- gopls = {
-        --   settings = {
-        --     gopls = {
-        --       completeUnimported = true,
-        --       usePlaceholders = true,
-        --       analyses = {
-        --         unusedparams = true,
-        --       },
-        --       staticcheck = true,
-        --     },
-        --   },
-        -- },
+        gopls = {
+          settings = {
+            gopls = {
+              semanticTokens = true,
+              completeUnimported = true,
+              usePlaceholders = true,
+              analyses = {
+                unusedparams = true,
+              },
+              staticcheck = true,
+            },
+          },
+        },
         -- pyright = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -691,6 +690,7 @@ require('lazy').setup({
       -- Adds other completion capabilities.
       --  nvim-cmp does not ship with all sources by default. They are split
       --  into multiple repos for maintenance purposes.
+      --  NOTE: Coplit 還沒加
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
       'onsails/lspkind.nvim',
@@ -795,11 +795,13 @@ require('lazy').setup({
   },
 
   { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
+    --   -- Change the name of the colorscheme plugin below, and then
+    --   -- change the command in the config to whatever the name of that colorscheme is.
+    --   --
+    --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+    'monokai-pro.nvim',
+
+    --   'folke/tokyonight.nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
@@ -917,7 +919,6 @@ require('lazy').setup({
   -- custom plugins
   require 'custom.plugins.monokai',
   require 'custom.plugins.eazymotion',
-  require 'custom.plugins.go',
   require 'custom.plugins.bufferline',
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
